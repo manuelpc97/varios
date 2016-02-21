@@ -29,9 +29,7 @@ int main(int argc, char const *argv[]){
 		int level;
 		cout << "Ingrese el nivel: ";
 		cin >> level;
-		if(choose == 2){
-			level++;
-		}
+		level =  (choose == 2)?level+1:level;
 		triangle = createTriangle(level);
 		fillTriangle(triangle, level);
 		if(choose == 1){
@@ -79,7 +77,6 @@ void printTriangle(int** triangle, int size){
 		}
 		cout << endl;
 	}
-	cout <<"-------------------------" << endl;
 }
 
 void fillTriangle(int** triangle, int size){
