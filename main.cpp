@@ -1,8 +1,9 @@
 #include <iostream>
 #include <cstdlib>
 #include <string>
+#include <cmath>
 
-using namespace std;
+using std::string;
 using std::cin;
 using std::cout;
 using std::endl;
@@ -12,10 +13,9 @@ void printTriangle(int**, int);
 void fillTriangle(int**, int);
 void printExpansion(int*, int);
 void destroyTriangle(int**, int);
-int nextPrime(int);
-bool isPrime(int);
-int fibonnaci(int);
+bool isPrime(unsigned long long int);
 int evaluar(int);
+unsigned long long int sumOfPowBases(int=1000);
 int stringSize(string);
 bool leftToRight(string, int, int);
 bool rightToLeft(string, int, int);
@@ -27,7 +27,7 @@ int main(int argc, char const *argv[]){
 	cout << "2.Expansión del Binomio de Newton." << endl;
 	cout << "3.Longest Collatz sequence (14)." << endl;
 	cout << "4.Truncatable primes (37)." << endl;
-	cout << "5.Primonacci. (304)" << endl;
+	cout << "5.Self powers. (48)" << endl;
 	cout << "-------------------" << endl;
 	cout << "Usted escogió la opción: ";
 	cin >> choose;
@@ -52,34 +52,26 @@ int main(int argc, char const *argv[]){
 		int numero;
 		cout<<"Ingrese el numero que desea evaluar: "<<endl;
 		cin>>numero;
-	
 		while(numero!=1){
 			cout<<numero<<">>";
 			numero = evaluar(numero);
 		}	
-	
-		if(numero==1)
+		if(numero == 1){
 			cout<<numero<<endl;
-
+		}
 	}else if(choose == 4){
 		string numero;
-
 		cout<<"Ingrese el numero que desea evaluar: "<<endl;
 		cin>>numero;	
-	
 		if(	leftToRight(numero , 0 , stringSize(numero)) && 
-		rightToLeft(numero, 0 , stringSize(numero)-1)){
+			rightToLeft(numero, 0 , stringSize(numero)-1)){
 			cout<<"The number is a truncatable prime"<<endl;
 		}else{
 			cout<<"The number isn't a truncatable prime"<<endl;
 		}	
-
 	}else if(choose == 5){
-		int number;
-		cout << "Ingrese el número en la sucesión: ";
-		
+		cout << "Result: " <<sumOfPowBases()<< endl;
 	}
-
 	cout << "-------------------" << endl;
 	return 0;
 }
@@ -162,17 +154,7 @@ void destroyTriangle(int** triangle, int size){
 	delete[] triangle;
 }
 
-int nextPrime(int number){
-	int aumt = 1;
-	int newPrime = 0;
-	while(isPrime(newPrime) == false){
-		newPrime = number + aumt;
-		aumt++;
-	}
-	return newPrime;
-}
-
-bool isPrime(int number){
+bool isPrime(unsigned long long int number){
 	if(number%2 == 0 && number!=2){
 		return false;
 	}else{
@@ -185,12 +167,8 @@ bool isPrime(int number){
 	return true;
 }
 
-int fibonnaci(int number){
-
-}
-
 int evaluar(int num){
-	if(num%2==0){
+	if(num%2 == 0){
 		return num/2;
 	}else{
 		return (num*3)+1;
@@ -200,7 +178,6 @@ int evaluar(int num){
 int stringSize(string word){
 	int contador=0;
 	int size=0;
-
 	while(word[contador]!='\0'){
 		size++;
 		contador++;
@@ -212,54 +189,72 @@ int stringSize(string word){
 bool leftToRight(string word, int first, int end){
 	char evaluar[end-first];
 	int contador=0;
-	if(first==end-1){
+	if(first == end-1){
+		for(int i = first;i < end;i++){
+			evaluar[contador]=word[i];
+			contador++;
+		}
+		contador = 0;
+		if(isPrime(atoi(evaluar))){
+			return true;
+		}
+		else{
+			return false;
+		}
+	}else{
 		for(int i = first;i < end;i++){
 			evaluar[contador]=word[i];
 			contador++;
 		}
 		contador=0;
-		if(isPrime(atoi(evaluar)))
-			return true;
-		else
+		if(isPrime(atoi(evaluar))){
+			leftToRight(word,first+1,end);
+		}else{
 			return false;
-	}else{
-		for(int i = first;i < end;i++){
-                        evaluar[contador]=word[i];
-                        contador++;
-                }
-		contador=0;
-                if(isPrime(atoi(evaluar))){
-                        leftToRight(word,first+1,end);
-                }else{
-                        return false;
 		}
 	}
-
 }
 
 bool rightToLeft(string word, int first, int end){
-        char evaluar[(end+1)-first];
-        int contador=end;
-        if(end==first){
-                for(int i = end;i >= first; i--){
-                        evaluar[contador]=word[i];
-                        contador--;
-                }
-                if(isPrime(atoi(evaluar)))
-                        return true;
-                else
-                        return false;
-        }else{
-                for(int i = end;i >=first;i--){
-                        evaluar[contador]=word[i];
-                        contador--;
-                }
-                if(isPrime(atoi(evaluar))){
-                        rightToLeft(word,first,end-1);
-                }else{
-                        return false;
-                }
-        }
+	char evaluar[(end+1)-first];
+	int contador=end;
+	if(end == first){
+		for(int i = end;i >= first; i--){
+			evaluar[contador]=word[i];
+			contador--;
+		}
+		if(isPrime(atoi(evaluar))){
+			return true;
+		}else{
+			return false;
+		}
+	}else{
+		for(int i = end;i >=first;i--){
+			evaluar[contador]=word[i];
+			contador--;
+		}
+		if(isPrime(atoi(evaluar))){
+			rightToLeft(word,first,end-1);
+		}else{
+			return false;
+		}
+	}
+}
 
+unsigned long long int sumOfPowBases(int limit){
+	unsigned long long int result = 0;
+	unsigned long long int modulo = 10000000000;
+ 
+	for (unsigned long long int i = 1; i <= 1000; i++) {
+    	unsigned long long int temp = i;
+	    for (int j = 1; j < i; j++) {
+	        temp *= i;
+	        temp %= modulo;
+	    }
+	    result += temp;
+	    result %= modulo;
+	}
+
+	return result;
 }
 
